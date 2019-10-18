@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>this</title>
+  <title>Function VS Arrow Function</title>
   <style>
     body {
       background: #f6df1d;
@@ -15,43 +16,65 @@
       height: 100vh;
       flex-direction: column;
     }
+
     .container {
       color: #e90063;
       font-size: 2.8em;
     }
   </style>
 </head>
+
 <body>
-  <h1>This es el objeto contexto de JavaScript en el cual se está ejecutando el código actual.</h1>
+  <h1>Function VS Arrow Function</h1>
   <h1 id="container" class="container"></h1>
+  <span>
+    <button id="type">Type</button>
+    <button id="name">Name</button>
+    <button id="random">Random</button>
+  </span>
 
   <script>
-    const $container = document.querySelector('#container')
-    // function renderName(name) {
-    //   $container.textContent = `Pokemon encontrado ${name}`
+
+    // function getRandomId(max) {
+    //   return Math.floor(Math.random() * (max - 1)  +1)
     // }
-    // function renderType(type) {
-    //   $container.textContent = `Es de tipo ${type}`
+    // console.log(
+    //   getRandomId(150)
+    // )
+
+    // const getRandomId = (max) => {
+    //   return Math.floor(Math.random() * (max - 1) + 1)
     // }
-    // renderName('Pikachu')
-    // renderType('Electric')
 
-    // ¿Dónde estoy ejecutando mi código? #CONTEXTO
+    // const getRandomId = (max) => Math.floor(Math.random() * (max - 1) + 1)
+    // const getRandomId = max => Math.floor(Math.random() * (max - 1) + 1)
+    const getRandomId = _ => Math.floor(Math.random() * (150 - 1) + 1)
 
-    // this en Node
-    // this en el Browser
+    // console.log(
+    //   getRandomId()
+    // )
 
-    // const pokemon = {
-    //   $container: document.querySelector('#container'),
-    //   renderName: function(name) {
-    //     this.$container.textContent = `Pokemon encontrado ${name}`
-    //   },
-    //   renderType: function(type) {
-    //     this.$container.textContent = `Es de tipo ${type}`
+    const example1 = {
+      max: 150,
+      getRandomId: function() {
+        return Math.floor(Math.random() * (this.max - 1)  +1)
+      }
+    }
+    // console.log(
+    //   example1.getRandomId()
+    // )
+
+    // const example2 = {
+    //   max: 150,
+    //   getRandomId: () => {
+    //     console.log(this)
+    //     return Math.floor(Math.random() * (this.max - 1) + 1)
     //   }
     // }
+    // console.log(
+    //   example2.getRandomId()
+    // )
 
-    // pokemon.renderName('Bulbasaur')
 
     class API {
       BASE_URL = 'https://pokeapi.co/api/v2/'
@@ -64,21 +87,42 @@
       }
     }
 
-    // const api = new API
-    // api.fetch(25)
-    // .then((data) => {
-    //   $container.textContent = data.name
-    // })
-
-
     class Pokemon extends API {
       constructor(id) {
         super(id)
         this.id = id
+        const self = this
+        this.$type.addEventListener('click', function() {
+          console.log(this)
+          self.renderType()
+        })
+        this.$name.addEventListener('click', () => {
+          console.log(this)
+          this.renderName()
+        })
+        this.$random.addEventListener('click', () => {
+          console.log(this.randomId)
+          this.fetch(this.randomId)
+          .then(() => {
+            this.renderName()
+            this.fetch(this.randomId)
+            .then(() => {
+              this.renderName()
+            })
+          })
+        })
       }
       $container = document.querySelector('#container')
+      $type = document.querySelector('#type')
+      $name = document.querySelector('#name')
+      $random = document.querySelector('#random')
+      // getRandomId() {
+      //   return Math.floor(Math.random() * (this.max - 1) + 1)
+      // }
+      get randomId() {
+        return Math.floor(Math.random() * (150 - 1) + 1)
+      }
       renderName() {
-        // this.$container.textContent = `Pokemon encontrado ${name}`
         this.$container.textContent = `Pokemon encontrado ${this.pokemon.name}`
       }
       renderType() {
@@ -86,13 +130,12 @@
       }
     }
 
-    const pokemon = new Pokemon(66)
+    const pokemon = new Pokemon(25)
     pokemon.fetch()
     .then(() => {
-      // pokemon.renderName()
-      pokemon.renderType()
+      pokemon.renderName()
     })
-    // pikachu.renderName('pikachu')
   </script>
 </body>
+
 </html>
